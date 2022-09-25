@@ -5,12 +5,16 @@ import org.http4s.implicits._
 import org.http4s.server.Router
 import org.http4s.server.blaze.BlazeServerBuilder
 
-import scala.concurrent.ExecutionContext.global
+import java.util.concurrent.Executors
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutorService}
 
 object Main extends IOApp {
 
 
   override def run(args: List[String]): IO[ExitCode] = {
+
+    implicit val executionContext: ExecutionContextExecutorService =
+      ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(8))
 
     def apis[F[_]: Monad](crawlService: CrawlService[F]) = Router(
       "/api/crawl" -> crawlService.crawlRoute,
@@ -18,7 +22,7 @@ object Main extends IOApp {
 
     val resource = for {
       browser <- Resource.eval(IO.delay(JsoupBrowser()))
-      _ <- BlazeServerBuilder[IO](global)
+      _ <- BlazeServerBuilder[IO](executionContext)
            .bindHttp(8080, "localhost")
            .withHttpApp(apis(new CrawlService[IO](browser)))
            .resource

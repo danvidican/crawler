@@ -17,7 +17,8 @@ libraryDependencies ++= Seq(
   "org.http4s"      %% "http4s-dsl"          % Http4sVersion,
   "org.http4s"      %% "http4s-scala-xml"    % Http4sVersion,
   "io.circe"        %% "circe-generic"       % CirceVersion,
-  "net.ruippeixotog" %% "scala-scraper" % ScalaScraperVersion
+  "net.ruippeixotog" %% "scala-scraper" % ScalaScraperVersion,
+  "org.scalatest" %% "scalatest" % "3.2.13" % "test"
 
 )
 
